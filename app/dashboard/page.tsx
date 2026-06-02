@@ -1,3 +1,7 @@
+"use client"
+import axios from "axios";
+import { useEffect, useState } from "react"
+
 const money=[
   {
     title:"Total Balance",
@@ -18,6 +22,56 @@ const money=[
 ]
 
 export default function Dashboard(){
+  const [open, setOpen]=useState(false);
+  const [user,setUser]=useState("");
+
+  const [expense,setExpense]=useState({
+    title:"",
+    amount:"",
+    category:""
+  })
+
+  useEffect(()=>{
+    const profile=localStorage.getItem("name")
+
+    if(profile){
+      console.log(profile)
+      setUser(profile)
+    }
+  },[])
+
+  function handleChange(e){
+    const name=e.target.name
+    setExpense((prev)=>({...prev,[name]:e.target.value}))
+    // console.log(expense.amount)
+  }
+
+  async function addExpense(){
+    try{
+      const token = localStorage.getItem("token");
+
+      const exp= await axios.post("http://localhost:3001/expense",expense,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if(exp.status===201){
+        alert("expense added");
+        setOpen(false);
+        setExpense({title:"",amount:"",category:""});
+      }
+    }
+    catch(error){
+      console.log("failed to add Expense",error)
+    }
+  }
+
+  function handleToggle(){
+    
+    setOpen((prev)=>!prev)
+  }
+
+
     return(
         <div className="flex justify-center h-screen bg-[#3a3f42] text-white ">
       {/* sidebar */}
@@ -25,7 +79,7 @@ export default function Dashboard(){
         {/* user info */}
         <div className="flex flex-col ">
           <img src="" alt="dp"/>
-          <p>hi name</p>
+          <p>hi {user}</p>
 
         </div>
 
@@ -43,13 +97,41 @@ export default function Dashboard(){
       {/* expense */}
       <div className="flex items-center flex-col bg-gray-400 w-full gap-5 p-5">
         {/* cards */}
-        <div className="flex gap-5 ">
+        <div className="flex gap-5 items-center">
           {money.map((item,index)=>(
             <div className="flex flex-col font-semibold p-7 shadow-2xl rounded-3xl border-2 w-auto">
               <p >{item.title}</p>
               <p className="text-3xl">{item.amount}</p>
             </div>
           ))}
+
+          <div className="relative">
+            <div>
+              <button className="p-3 bg-red-400 rounded-full" onClick={handleToggle}> Add Expense +</button>
+            </div>
+            
+            {/* dropdown */}
+            <div className={` flex flex-col  justify-center items-center gap-3 bg-[#fcf5eb] text-black absolute size-100 ${open? "opacity-100 transition-all translate-y-20 " : "opacity-0 transition-all translate-y-0"}`} >
+            
+            <input className="p-2 w-100 rounded-3xl border border-black " type="text" placeholder="Title " name="title" value={expense.title} onChange={handleChange}/>
+            <input className="p-2 w-100 rounded-3xl border border-black" type="text" placeholder="Amount" name="amount" value={expense.amount} onChange={handleChange}/>
+            <select 
+  className="p-2 w-full rounded-3xl border border-black text-black bg-white" 
+  name="category" 
+  value={expense.category} 
+  onChange={handleChange}
+>
+  <option value="">Select Category</option>
+  <option value="GROCERY">Grocery</option>
+  <option value="FOOD">Food</option>
+  <option value="FUEL">Fuel</option>
+  <option value="EXTRA">Extra</option>
+</select>
+            <button className="p-2 w-100 rounded-3xl bg-lime-400 font-semibold" onClick={addExpense}>Add expense</button>
+
+            </div>
+          </div>
+
         </div>
 
 

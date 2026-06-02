@@ -19,4 +19,26 @@ model User{
   lastname String
   email String @unique
   password String
+  expenses Expense[]
+}
+
+model Expense{
+  id Int @id @default(autoincrement())
+  title String?
+  amount Float
+  createdAt DateTime @default(now())
+
+  category Category[]
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum Category {
+  GROCERY
+  FOOD
+  FUEL
+  EXTRA
+  RENT
+  TRAVEL
+  ENTERTAINMENT
 }

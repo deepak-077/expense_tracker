@@ -1,7 +1,10 @@
 "use client"
+import axios from "axios";
 import { useState } from "react"
+import { useRouter } from "next/navigation";
 
 export default function Signup(){
+    const router =useRouter();
     const [user,setUser] = useState({
         firstname:"",
         lastname:"",
@@ -14,8 +17,18 @@ export default function Signup(){
         setUser((prev)=>({...prev,[name]:e.target.value}))
         
     }
-    function handleSubmit(){
-        
+    async function handleSubmit(){
+        try{
+            const response = await axios.post("http://localhost:3001/signup",user)
+            if(response.status===200){
+                alert("Signup successful")
+                router.push("/signin");
+            }
+
+        }
+        catch(error){
+            console.log("failed to create user",error)
+        }
     }
 
     
