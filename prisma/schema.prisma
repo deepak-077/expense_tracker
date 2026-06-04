@@ -28,7 +28,7 @@ model Expense{
   amount Float
   createdAt DateTime @default(now())
 
-  category Category[]
+  category Category
   userId Int
   user User @relation(fields: [userId], references: [id])
 }

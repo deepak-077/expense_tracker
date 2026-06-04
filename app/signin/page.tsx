@@ -23,6 +23,9 @@ export default function Signin(){
                 localStorage.setItem("token",response.data.token)
                 localStorage.setItem("name",response.data.user.firstname)
                 alert("signin successfull")
+                console.log("token = ", response.data.token);
+                console.log("username = ", response.data.user.firstname);
+
                 router.push("/dashboard")
             }
         }
@@ -31,7 +34,6 @@ export default function Signin(){
         }
     }
 
-    
     return(
         <div className="flex flex-col p-5 justify-center items-center gap-3 h-screen">
             <input className="p-2 w-100 rounded-3xl border" type="text" placeholder="Email " name="email"  value={credentials.email} onChange={handleChange}/>

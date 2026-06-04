@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient,Category } from "@prisma/client";
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken"
@@ -41,7 +41,6 @@ app.post("/signup",async(req,res)=>{
             }
         })
         res.status(200).json({msg:"user created successfully"})
-
     }
     catch(error){
         res.status(400).json({error:"failed to create user"})
@@ -78,8 +77,18 @@ app.post("/signin",async (req,res)=>{
 })
 
 app.post("/expense", authenticationToken, async(req,res)=>{
+    console.log("➡️ Incoming Body Data:", req.body);
+
     const {title,category,amount}=req.body
     const parsedAmount =parseFloat(amount);
+
+    console.log("📊 Parsed Values -> Title:", title, " | Category:", category, " | Amount:", parsedAmount);
+
+    if (!category || !title || isNaN(parsedAmount)) {
+        console.log("❌ Failed the initial validation guard check!");
+
+        return res.status(400).json({ error: "Missing title, category, or valid amount" });
+    }
 
     const userEmail=req.user.email
     try{
@@ -92,12 +101,13 @@ app.post("/expense", authenticationToken, async(req,res)=>{
             
         }
         const normalizedCategory = category.toUpperCase().trim();
+        const databaseCategory = normalizedCategory as Category
 
         //create an expense
         const exp=await prisma.expense.create({
             data:{
                 title:title,
-                category:normalizedCategory,
+                category:databaseCategory,
                 amount:parsedAmount,
                 userId:user.id
             }
@@ -105,6 +115,8 @@ app.post("/expense", authenticationToken, async(req,res)=>{
         return res.status(201).json({ msg:"Expense added successfully", expense:exp})
     }
     catch(error){
+        console.log("❌ Prisma Database Insert Failed. Error Details:");
+        console.log(error)
         return res.status(400).json({error:"failed to add expense"})
 
     }

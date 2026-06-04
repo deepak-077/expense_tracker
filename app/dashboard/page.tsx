@@ -99,9 +99,13 @@ export default function Dashboard(){
         {/* cards */}
         <div className="flex gap-5 items-center">
           {money.map((item,index)=>(
-            <div className="flex flex-col font-semibold p-7 shadow-2xl rounded-3xl border-2 w-auto">
+            <div className="flex flex-col font-semibold p-7 shadow-2xl rounded-3xl border-2 w-auto ">
               <p >{item.title}</p>
               <p className="text-3xl">{item.amount}</p>
+              {item.title==="Monthly Income" && (
+                <button className="bg-rose-400 p-1.5 rounded-2xl">Edit</button>
+              )}
+              
             </div>
           ))}
 
@@ -125,6 +129,10 @@ export default function Dashboard(){
   <option value="GROCERY">Grocery</option>
   <option value="FOOD">Food</option>
   <option value="FUEL">Fuel</option>
+  <option value="EXTRA">Rent</option>
+  <option value="FUEL">Travel</option>
+  <option value="EXTRA">Entertainment</option>
+
   <option value="EXTRA">Extra</option>
 </select>
             <button className="p-2 w-100 rounded-3xl bg-lime-400 font-semibold" onClick={addExpense}>Add expense</button>
