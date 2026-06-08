@@ -66,7 +66,7 @@ app.post("/signin",async (req,res)=>{
                     expiresIn:"1h"
                 })
                 
-            return res.status(200).json({msg:"logged in successfully",token,user:{ firstname:existingUser.firstname }})
+            return res.status(200).json({msg:"logged in successfully",token,user:{ firstname:existingUser.firstname, email:existingUser.email }})
             }
             return res.status(401).json({msg:"incorrect password"})
         }
@@ -75,6 +75,47 @@ app.post("/signin",async (req,res)=>{
         return res.status(400).json({error: "failed to signin"})
     }
 })
+
+// for updating income
+app.put("/income",async (req,res)=>{
+    const {email,income}=req.body
+    try{
+        const upd=await prisma.user.update({
+            where:{
+                email:email
+            },
+            data:{
+                income:income
+            }
+        })
+        console.log("Income Updated successfully")
+        res.status(201).json({msg:"Income updated"})
+    }
+    catch(error){
+        console.log(error)
+        res.status(400).json({msg:"failed to update income"})
+    }
+})
+
+// to render user income on front end
+app.get("/income", authenticationToken, async(req,res)=>{
+    const userEmail= req.user.email
+    try{
+        
+        const user= await prisma.user.findUnique({
+        where:{email:userEmail},
+        select:{income:true}
+        
+    })
+    res.json({income:user?.income || 0 })
+
+    }
+    catch(error){
+        console.log(error, "failed to get user's income")
+    }
+    
+})
+
 
 app.post("/expense", authenticationToken, async(req,res)=>{
     console.log("➡️ Incoming Body Data:", req.body);
@@ -92,7 +133,6 @@ app.post("/expense", authenticationToken, async(req,res)=>{
 
     const userEmail=req.user.email
     try{
-        
         const user=await prisma.user.findUnique({
             where:{email:userEmail}
         });

@@ -21,10 +21,9 @@ export default function Signin(){
             const response = await axios.post("http://localhost:3001/signin",credentials)
             if(response.status===200){
                 localStorage.setItem("token",response.data.token)
-                localStorage.setItem("name",response.data.user.firstname)
+                localStorage.setItem("user",JSON.stringify(response.data.user))
                 alert("signin successfull")
-                console.log("token = ", response.data.token);
-                console.log("username = ", response.data.user.firstname);
+                
 
                 router.push("/dashboard")
             }

@@ -19,6 +19,7 @@ model User{
   lastname String
   email String @unique
   password String
+  income Float @default(0)
   expenses Expense[]
 }
 
