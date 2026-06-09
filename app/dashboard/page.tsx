@@ -35,13 +35,37 @@ export default function Dashboard(){
     category:""
   })
 
+  // monthly expense
+  const [monthlyExpense,setMonthlyExpense]=useState<any[]>([])
+
   const [income,setIncome]= useState<any>(0)
   //interesting fact - input type=number - browser returns value as string 
   const [editIncome,setEditIncome] = useState(false)
 
   useEffect(()=>{
     getIncome()
+    getExpense()
+    
   },[])  
+
+  const allExpense = monthlyExpense?.reduce((total,item)=>total+item.amount,0)||0
+
+  async function getExpense(){
+    const token= localStorage.getItem("token")
+    try{
+      const exp= await axios.get("http://localhost:3001/expense",{
+        headers:{Authorization:`Bearer ${token}`}
+      })
+      setMonthlyExpense(exp.data)
+      
+    }
+    catch(error){
+      console.log(error, "failed to get expense")
+    }
+  }
+
+
+
 
   async function getIncome(){
     const token = localStorage.getItem("token")
@@ -51,7 +75,7 @@ export default function Dashboard(){
       })
       const parsedEarning=parseFloat(earnings.data.income)
       setIncome(parsedEarning)
-    
+      
     }
     catch(error){
       console.log(error, "failed to get income")
@@ -79,7 +103,6 @@ export default function Dashboard(){
   function handleChange(e){
     const name=e.target.name
     setExpense((prev)=>({...prev,[name]:e.target.value}))
-    // console.log(expense.amount)
   }
 
   
@@ -113,6 +136,7 @@ export default function Dashboard(){
         alert("expense added");
         setOpen(false);
         setExpense({title:"",amount:"",category:""});
+        getExpense()
       }
     }
     catch(error){
@@ -151,10 +175,21 @@ export default function Dashboard(){
       <div className="flex items-center flex-col bg-gray-400 w-full gap-5 p-5">
         {/* cards */}
         <div className="flex gap-5 items-center">
-          {money.map((item,index)=>(
-            <div className="flex flex-col font-semibold p-7 shadow-2xl rounded-3xl border-2 w-auto  ">
+          {money.map((item,index)=>{
+            let liveamount= item.amount
+            if(item.title==="Monthly Income") liveamount=income;
+            if(item.title==="Total Balance") liveamount=income-allExpense;
+            if(item.title==="Monthly Expense") liveamount=allExpense;
+            if(item.title==="Savings Rate") {
+              const rate = income>0?((income-allExpense)/income)*100:0
+                liveamount=`${rate.toFixed(0)}%`
+            }
+
+
+            return(
+              <div className="flex flex-col font-semibold p-7 shadow-2xl rounded-3xl border-2 w-auto  ">
               <p >{item.title}</p>
-              <p className="text-3xl">{item.title==="Monthly Income"?income :item.amount}</p>
+              <p className="text-3xl">{liveamount}</p>
               
     
               {/* edit button for Income */}
@@ -180,7 +215,8 @@ export default function Dashboard(){
                 </div>
               )}
             </div>
-          ))}
+            )
+})}
 
           <div className="relative">
             <div>

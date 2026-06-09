@@ -116,9 +116,30 @@ app.get("/income", authenticationToken, async(req,res)=>{
     
 })
 
+app.get("/expense",authenticationToken,async (req,res)=>{
+    const userEmail = req.user.email;
+
+    try{
+        const exp= await prisma.expense.findMany({
+            where:{
+                user:{email:userEmail}
+            },
+            orderBy:{
+                createdAt:"desc"
+            }
+        })
+        res.status(200).json(exp)
+
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).json({msg:"failed to get expenses"})
+    }
+
+})
+
 
 app.post("/expense", authenticationToken, async(req,res)=>{
-    console.log("➡️ Incoming Body Data:", req.body);
 
     const {title,category,amount}=req.body
     const parsedAmount =parseFloat(amount);
@@ -126,7 +147,7 @@ app.post("/expense", authenticationToken, async(req,res)=>{
     console.log("📊 Parsed Values -> Title:", title, " | Category:", category, " | Amount:", parsedAmount);
 
     if (!category || !title || isNaN(parsedAmount)) {
-        console.log("❌ Failed the initial validation guard check!");
+        console.log("Failed the initial validation !");
 
         return res.status(400).json({ error: "Missing title, category, or valid amount" });
     }
