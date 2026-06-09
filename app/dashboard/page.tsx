@@ -2,6 +2,8 @@
 import axios from "axios";
 
 import { useEffect, useRef, useState } from "react"
+import { useExpense } from "../hooks/useExpense";
+import { useRouter } from "next/navigation";
 
 const money=[
   {
@@ -36,7 +38,7 @@ export default function Dashboard(){
   })
 
   // monthly expense
-  const [monthlyExpense,setMonthlyExpense]=useState<any[]>([])
+  const {monthlyExpense, getExpense}= useExpense()
 
   const [income,setIncome]= useState<any>(0)
   //interesting fact - input type=number - browser returns value as string 
@@ -50,20 +52,7 @@ export default function Dashboard(){
 
   const allExpense = monthlyExpense?.reduce((total,item)=>total+item.amount,0)||0
 
-  async function getExpense(){
-    const token= localStorage.getItem("token")
-    try{
-      const exp= await axios.get("http://localhost:3001/expense",{
-        headers:{Authorization:`Bearer ${token}`}
-      })
-      setMonthlyExpense(exp.data)
-      
-    }
-    catch(error){
-      console.log(error, "failed to get expense")
-    }
-  }
-
+  const router = useRouter()
 
 
 
@@ -164,7 +153,9 @@ export default function Dashboard(){
         <div className="flex flex-col gap-3">
           <button> Dashboard </button>
           <button> Budget </button>
-          <button> Transactions </button>
+          <button onClick={()=>{
+            router.push("/transactions")
+          }}> Transactions </button>
           <button> Reports </button>
           <button> Saving </button>
         </div>
