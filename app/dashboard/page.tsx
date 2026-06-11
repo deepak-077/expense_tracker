@@ -154,12 +154,15 @@ export default function Dashboard(){
 
         <div className="flex flex-col gap-3">
           <button> Dashboard </button>
-          <button> Budget </button>
+          {/* <button> Budget </button> */}
           <button onClick={()=>{
             router.push("/transactions")
           }}> Transactions </button>
-          <button> Reports </button>
-          <button> Saving </button>
+          
+          <button onClick={()=>{
+            router.push("/reports")
+          }}> Reports </button>
+          {/* <button> Saving </button> */}
         </div>
 
         </div>
