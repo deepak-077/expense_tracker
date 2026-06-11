@@ -141,9 +141,10 @@ export default function Dashboard(){
   }
 
     return(
-        <div className="flex justify-center h-screen bg-[#3a3f42] text-white ">
-      {/* sidebar */}
-      <div className="flex flex-col bg-lime-200 w-[250px] text-black font-semibold text-2xl gap-5 p-5">
+        <div className="flex h-screen bg-[#3a3f42] text-white ">
+        
+        {/* sidebar */}
+        <div className="flex flex-col bg-lime-200 w-full max-w-[250px] text-black font-semibold text-2xl gap-5 p-5">
         {/* user info */}
         <div className="flex flex-col ">
           <img src="" alt="dp"/>
@@ -161,7 +162,7 @@ export default function Dashboard(){
           <button> Saving </button>
         </div>
 
-      </div>
+        </div>
 
       {/* expense */}
       <div className="flex items-center flex-col bg-gray-400 w-full gap-5 p-5">
@@ -215,18 +216,16 @@ export default function Dashboard(){
               <button className="p-3 bg-red-400 rounded-full" onClick={handleToggle}> Add Expense +</button>
             </div>
             
-            {/* dropdown */}
-            <div className={` flex flex-col  justify-center items-center gap-3 bg-[#fcf5eb] text-black absolute size-100 ${open? "opacity-100 transition-all translate-y-20 " : "opacity-0 transition-all translate-y-0"}`} >
+            {/* add expense dropdown */}
+            <div className={`absolute right-0 flex flex-col justify-center items-center rounded-2xl p-3  gap-3 bg-[#fcf5eb] z-10 text-black size-80 ${open? "opacity-100 transition-all translate-y-20 " : "opacity-0 transition-all translate-y-0"}`} >
             
-            <input className="p-2 w-100 rounded-3xl border border-black " type="text" placeholder="Title " name="title" value={expense.title} onChange={handleChange}/>
-            <input className="p-2 w-100 rounded-3xl border border-black" type="text" placeholder="Amount" name="amount" value={expense.amount} onChange={handleChange}/>
+            <input className="p-2 w-full rounded-3xl border border-black " type="text" placeholder="Title " name="title" value={expense.title} onChange={handleChange}/>
+            <input className="p-2 w-full rounded-3xl border border-black" type="text" placeholder="Amount" name="amount" value={expense.amount} onChange={handleChange}/>
             
-            <select 
-  className="p-2 w-full rounded-3xl border border-black text-black bg-white" 
-  name="category" 
-  value={expense.category} 
-  onChange={handleChange}
->
+            <select className="p-2 w-full rounded-3xl border border-black text-black bg-white" 
+                name="category" 
+                value={expense.category} 
+                onChange={handleChange} >
   <option value="">Select Category</option>
   <option value="GROCERY">Grocery</option>
   <option value="FOOD">Food</option>
@@ -237,26 +236,16 @@ export default function Dashboard(){
 
   <option value="EXTRA">Extra</option>
 </select>
-            <button className="p-2 w-100 rounded-3xl bg-lime-400 font-semibold" onClick={addExpense}>Add expense</button>
+            <button className="p-2 w-full rounded-3xl bg-lime-400 font-semibold" onClick={addExpense}>Add expense</button>
 
             </div>
           </div>
 
         </div>
 
-
-        <div className="flex gap-10">
-          {/* Spending by category */}
-          <div>
-            <Piechart monthlyExpense={monthlyExpense}/>
-
-          </div>
-
-          {/* Monthly Overview */}
-          <div className="bg-blue-400 size-100">
-
-          </div>
-
+        {/* Spending by category */}
+        <div className="flex justify-start">
+          <Piechart monthlyExpense={monthlyExpense}/>
         </div>
 
       </div>

@@ -54,7 +54,7 @@ export default function Piechart({monthlyExpense}:ExpenseCharts){
                 </Pie>
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#1F2937', borderColor: '#374151', borderRadius: '12px', color: '#fff' }}
-                  formatter={(value) => [`$${parseFloat(value as string).toFixed(2)}`, 'Total spent']}
+                  formatter={(value) => [` ₹${parseFloat(value as string).toFixed(2)}`, 'Total spent']}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
               </PieChart>

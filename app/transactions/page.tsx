@@ -14,9 +14,9 @@ export default function Transactions(){
 
     
     return(
-        <div>
+        <div className="flex flex-col gap-4 justify-center p-4">
             {/* expenses table */}
-            <h2>Transactions</h2>
+            <h2 className="text-3xl p-1.5 bg-red-400 font-semibold text-center rounded-full">Transactions</h2>
             {loading ?(
                 <div className="text-center py-10 font-medium text-lg">
                     <p className="animate-pulse ">Loading transactions...</p>
