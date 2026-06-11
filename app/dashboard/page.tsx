@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react"
 import { useExpense } from "../hooks/useExpense";
 import { useRouter } from "next/navigation";
+import Piechart from "../components/Piechart";
 
 const money=[
   {
@@ -246,7 +247,8 @@ export default function Dashboard(){
 
         <div className="flex gap-10">
           {/* Spending by category */}
-          <div className="bg-amber-400 size-100">
+          <div>
+            <Piechart monthlyExpense={monthlyExpense}/>
 
           </div>
 
